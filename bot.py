@@ -52,19 +52,28 @@ class MenuPaises(discord.ui.Select):
         super().__init__(placeholder="👉 Elige tu bandera aquí...", min_values=1, max_values=1, options=opciones, custom_id="menu_jochis_paises")
 
     async def callback(self, interaction: discord.Interaction):
-        nombre_rol = self.values[0]
-        rol = discord.utils.get(interaction.guild.roles, name=nombre_rol)
+        nombre_rol_pais = self.values
+        rol_pais = discord.utils.get(interaction.guild.roles, name=nombre_rol_pais)
+        rol_general = discord.utils.get(interaction.guild.roles, name="jochis promedio")
         
-        if rol is None:
-            await interaction.response.send_message(f"❌ Error técnico: El rol llamado '{nombre_rol}' no existe en los ajustes de Discord. ¡Créalo para que pueda asignarlo!", ephemeral=True)
+        if rol_pais is None:
+            await interaction.response.send_message(f"❌ Error: El rol de país '{nombre_rol_pais}' no existe en tu Discord. ¡Créalo!", ephemeral=True)
+            return
+        if rol_general is None:
+            await interaction.response.send_message(f"❌ Error: El rol 'jochis promedio' no existe en tu Discord. ¡Créalo con ese nombre exacto!", ephemeral=True)
             return
 
-        if rol in interaction.user.roles:
-            await interaction.user.remove_roles(rol)
-            await interaction.response.send_message(f"🗑️ Te he quitado el rol de **{nombre_rol}**.", ephemeral=True)
+        if rol_pais in interaction.user.roles:
+            await interaction.user.remove_roles(rol_pais)
+            try:
+                await interaction.user.remove_roles(rol_general)
+            except:
+                pass
+            await interaction.response.send_message(f"🗑️ Te he quitado tus roles de **{nombre_rol_pais}** y **jochis promedio**.", ephemeral=True)
         else:
-            await interaction.user.add_roles(rol)
-            await interaction.response.send_message(f"✨ ¡Bautizada con éxito! Ahora tienes tu rol de **{nombre_rol}**.", ephemeral=True)
+            await interaction.user.add_roles(rol_pais)
+            await interaction.user.add_roles(rol_general)
+            await interaction.response.send_message(f"✨ ¡Bautizada oficialmente! Ahora tienes tus roles de **{nombre_rol_pais}** y **jochis promedio** 💅👑.", ephemeral=True)
 
 class VistaJochis(discord.ui.View):
     def __init__(self):
@@ -84,7 +93,7 @@ async def enviar_bautizo(ctx):
     embed = discord.Embed(
         title="👑 ¡EL ALTAR DE LAS JOCHIS PROMEDIO! 👑",
         description="✨ **¡Otra jochis más!** ✨\n\n"
-                    "📍 Indica tu país abajo en el menú desplegable, toma este rol y **sé oficialmente bautizada por mí como una jochis promedio**.\n\n"
+                    "📍 Indica tu país abajo en el menú desplegable para saber en qué parte del mundo hay otra jochis, toma este rol y **sé oficialmente bautizada por mí como una jochis promedio**.\n\n"
                     "¡Presiona el menú de abajo, busca tu bandera y reclama tu corona! 💅👑",
         color=15418782
     )

@@ -52,7 +52,8 @@ class MenuPaises(discord.ui.Select):
         super().__init__(placeholder="👉 Elige tu bandera aquí...", min_values=1, max_values=1, options=opciones, custom_id="menu_jochis_paises")
 
     async def callback(self, interaction: discord.Interaction):
-        nombre_rol_pais = self.values
+        # CORRECCIÓNTÉCNICA: Extrae el nombre de texto limpio saltándose los corchetes
+        nombre_rol_pais = self.values[0]
         rol_pais = discord.utils.get(interaction.guild.roles, name=nombre_rol_pais)
         rol_general = discord.utils.get(interaction.guild.roles, name="jochis promedio")
         
